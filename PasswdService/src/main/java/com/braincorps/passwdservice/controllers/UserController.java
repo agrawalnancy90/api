@@ -1,5 +1,6 @@
 package com.braincorps.passwdservice.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -9,8 +10,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.braincorps.passwdservice.models.Group;
 import com.braincorps.passwdservice.models.User;
 import com.braincorps.passwdservice.models.UserQuery;
+import com.braincorps.passwdservice.repository.GroupFileRepository;
 import com.braincorps.passwdservice.repository.IUserRepository;
 import com.braincorps.passwdservice.repository.UserFileRepository;
 
@@ -21,8 +24,7 @@ public class UserController {
 	
 	//@Autowired(required = true)
     IUserRepository userRepository = new UserFileRepository();
-	
-    
+	  
     
 	@GetMapping("/users")
 	public List<User> getAllUsers(){
@@ -53,6 +55,16 @@ public class UserController {
 		UserQuery query = new UserQuery(name, uid, gid, comment, home, shell);
 		return userRepository.getUsersByQuery(query);
 				
+	}
+	
+	@GetMapping("/users/{uid}/groups")
+	public ResponseEntity<List<Group>> getUserGroups(@PathVariable Long uid){
+		User user = userRepository.getUser(uid);
+		if(user != null) {
+			List<Group> groups = (new GroupFileRepository()).getGroupsByUser(user.getName());
+			return new ResponseEntity<List<Group>>(groups, HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 }

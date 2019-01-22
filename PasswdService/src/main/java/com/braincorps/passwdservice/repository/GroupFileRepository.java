@@ -150,4 +150,31 @@ public class GroupFileRepository implements IGroupRepository{
 		return groups;
 	}
 
+	@Override
+	public List<Group> getGroupsByUser(String member) {
+		File file = new File(groupFilePath); 
+		List<Group> groups = new ArrayList<>();
+		
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(new FileReader(file));
+			
+			String line;
+			if(br != null)
+				while ((line = br.readLine()) != null) {
+					Group group = parseLineAsGroup(line);
+					if(group != null && group.getMembers().contains(member))
+						groups.add(group);							
+				}
+		} catch (FileNotFoundException e) {
+			// TODO Display relevant error
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return groups;
+	}
+	
 }
