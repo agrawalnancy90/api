@@ -3,9 +3,9 @@ package com.braincorps.passwdservice.models;
 import java.util.List;
 
 public class Group {
-	String name;
-	long gid;
-	List<String> members;
+	private String name;
+	private long gid;
+	private List<String> members;
 	
 	public Group(String name, long gid, List<String> members) {
 		super();
