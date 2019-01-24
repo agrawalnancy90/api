@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.braincorps.passwdservice.models.Group;
 import com.braincorps.passwdservice.models.User;
 import com.braincorps.passwdservice.models.UserQuery;
-import com.braincorps.passwdservice.repository.GroupFileRepository;
+import com.braincorps.passwdservice.services.GroupService;
 import com.braincorps.passwdservice.services.UserService;
 
 @RestController
@@ -21,6 +21,9 @@ public class UserController {
 	
 	@Autowired
     UserService userService;
+	
+	@Autowired
+	GroupService groupService;
 	  
 	@GetMapping("/users")
 	public List<User> getAllUsers(){
@@ -53,7 +56,7 @@ public class UserController {
 	public ResponseEntity<List<Group>> getUserGroups(@PathVariable Long uid){
 		User user = userService.getUserById(uid);
 		if(user != null) {
-			List<Group> groups = (new GroupFileRepository()).getGroupsByUser(user.getName());
+			List<Group> groups = groupService.getGroupsByUser(user.getName());
 			return new ResponseEntity<List<Group>>(groups, HttpStatus.OK);
 		}
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
