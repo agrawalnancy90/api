@@ -14,33 +14,26 @@ import com.braincorps.passwdservice.models.Group;
 import com.braincorps.passwdservice.models.User;
 import com.braincorps.passwdservice.models.UserQuery;
 import com.braincorps.passwdservice.repository.GroupFileRepository;
-import com.braincorps.passwdservice.repository.IUserRepository;
-
-
+import com.braincorps.passwdservice.services.UserService;
 
 @RestController
 public class UserController {
 	
 	@Autowired
-    IUserRepository userRepository;
+    UserService userService;
 	  
-    
 	@GetMapping("/users")
 	public List<User> getAllUsers(){
-		return userRepository.getAllUsers();
+		return userService.getAllUsers();
 	}
-	
-	
 	
 	@GetMapping("/users/{uid}")
 	public ResponseEntity<User> getUser(@PathVariable Long uid){
-		User user = userRepository.getUser(uid);
+		User user = userService.getUserById(uid);
 		if(user != null)
 			return new ResponseEntity<User>(user, HttpStatus.OK);
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-	
-	
 	
 	@GetMapping("/users/query")
 	public List<User> getUsersByQuery(
@@ -52,13 +45,13 @@ public class UserController {
 			@RequestParam(value = "shell", required = false) String shell){
 		
 		UserQuery query = new UserQuery(name, uid, gid, comment, home, shell);
-		return userRepository.getUsersByQuery(query);
+		return userService.getUsersByQuery(query);
 				
 	}
 	
 	@GetMapping("/users/{uid}/groups")
 	public ResponseEntity<List<Group>> getUserGroups(@PathVariable Long uid){
-		User user = userRepository.getUser(uid);
+		User user = userService.getUserById(uid);
 		if(user != null) {
 			List<Group> groups = (new GroupFileRepository()).getGroupsByUser(user.getName());
 			return new ResponseEntity<List<Group>>(groups, HttpStatus.OK);

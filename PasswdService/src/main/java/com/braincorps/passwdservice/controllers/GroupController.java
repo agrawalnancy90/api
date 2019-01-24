@@ -12,33 +12,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.braincorps.passwdservice.models.Group;
 import com.braincorps.passwdservice.models.GroupQuery;
-import com.braincorps.passwdservice.repository.IGroupRepository;
-
-
+import com.braincorps.passwdservice.services.GroupService;
 
 @RestController
 public class GroupController {
 	
 	@Autowired
-    IGroupRepository groupRepository;
+    GroupService groupService;
 	
-    
 	@GetMapping("/groups")
 	public List<Group> getAllGroups(){
-		return groupRepository.getAllGroups();
+		return groupService.getAllGroups();
 	}
-	
-	
 	
 	@GetMapping("/groups/{gid}")
 	public ResponseEntity<Group> getGroup(@PathVariable Long gid){
-		Group group = groupRepository.getGroup(gid);
+		Group group = groupService.getGroupById(gid);
 		if(group != null)
 			return new ResponseEntity<Group>(group, HttpStatus.OK);
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-	
-	
 	
 	@GetMapping("/groups/query")
 	public List<Group> getGroupsByQuery(
@@ -47,7 +40,7 @@ public class GroupController {
 			@RequestParam(value = "member", required = false) List<String> members){
 		
 		GroupQuery query = new GroupQuery(name, gid, members);
-		return groupRepository.getGroupsByQuery(query);
+		return groupService.getGroupsByQuery(query);
 				
 	}
 
