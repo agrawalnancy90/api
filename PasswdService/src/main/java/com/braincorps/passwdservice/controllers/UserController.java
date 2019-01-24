@@ -1,8 +1,8 @@
 package com.braincorps.passwdservice.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,15 +15,14 @@ import com.braincorps.passwdservice.models.User;
 import com.braincorps.passwdservice.models.UserQuery;
 import com.braincorps.passwdservice.repository.GroupFileRepository;
 import com.braincorps.passwdservice.repository.IUserRepository;
-import com.braincorps.passwdservice.repository.UserFileRepository;
 
 
 
 @RestController
 public class UserController {
 	
-	//@Autowired(required = true)
-    IUserRepository userRepository = new UserFileRepository();
+	@Autowired
+    IUserRepository userRepository;
 	  
     
 	@GetMapping("/users")

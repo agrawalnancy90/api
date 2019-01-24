@@ -8,18 +8,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import com.braincorps.passwdservice.configuration.Properties;
 import com.braincorps.passwdservice.models.Group;
 import com.braincorps.passwdservice.models.GroupQuery;
-import com.braincorps.passwdservice.models.User;
-import com.braincorps.passwdservice.models.UserQuery;
 
-@ComponentScan
+@Component
+@Service
 public class GroupFileRepository implements IGroupRepository{
-
-	private String groupFilePath = Properties.GROUPS_FILEPATH;
+	
+	@Value("${filepath.group}")
+	private String groupFilePath;
 	
 	@Override
 	public Group getGroup(long gid) {

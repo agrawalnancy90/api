@@ -8,17 +8,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import com.braincorps.passwdservice.configuration.Properties;
 import com.braincorps.passwdservice.models.User;
 import com.braincorps.passwdservice.models.UserQuery;
 
-@ComponentScan
+@Component
+@Service
 public class UserFileRepository implements IUserRepository{
 
-	//@Value("${filepath.user}")
-	private String userFilePath = Properties.USERS_FILEPATH;
+	@Value("${filepath.user}")
+	private String userFilePath;
 	
 	@Override
 	public User getUser(long uid) {

@@ -2,6 +2,7 @@ package com.braincorps.passwdservice.controllers;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.braincorps.passwdservice.models.Group;
 import com.braincorps.passwdservice.models.GroupQuery;
-import com.braincorps.passwdservice.repository.GroupFileRepository;
 import com.braincorps.passwdservice.repository.IGroupRepository;
 
 
@@ -19,8 +19,8 @@ import com.braincorps.passwdservice.repository.IGroupRepository;
 @RestController
 public class GroupController {
 	
-	//@Autowired(required = true)
-    IGroupRepository groupRepository = new GroupFileRepository();
+	@Autowired
+    IGroupRepository groupRepository;
 	
     
 	@GetMapping("/groups")
