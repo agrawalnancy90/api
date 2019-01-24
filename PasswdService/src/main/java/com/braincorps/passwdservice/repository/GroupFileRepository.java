@@ -111,7 +111,7 @@ public class GroupFileRepository implements IGroupRepository{
  * @param query
  * @return
  */
-	private boolean matchesQuery(Group group, GroupQuery query) {
+	public boolean matchesQuery(Group group, GroupQuery query) {
 		if(query.getName() != null && !group.getName().equals(query.getName()))
 			return false;
 		if(query.getGid() != null && group.getGid() != query.getGid())
