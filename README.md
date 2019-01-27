@@ -25,6 +25,9 @@ Running application using Eclipse IDE:
 
 ## Query Examples
 
+The API documentation can be found at:
+`http://localhost:8080/swagger-ui.html`
+
 There are 7 GET end-points in this service (Assuming service is running on localhost:8080):
 
 `localhost:8080/users`
@@ -118,6 +121,7 @@ Example Response:
 ## Built With
 * Java 8
 * Spring Boot (v2.1.2)
+* Swagger
 * Maven
 * JUnit Framework
 * Eclipse IDE
