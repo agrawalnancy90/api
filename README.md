@@ -4,6 +4,7 @@ A toy HTTP service that exposes the user and group information on a UNIX-like sy
 ## Table of contents
 * [Software Requirements](#softwarerequirements)
 * [Setup](#setup)
+* [Query Examples - API Endpoints](#queryexamples)
 * [Built With](#builtwith)
 * [Contact](#contact)
 
