@@ -1,18 +1,14 @@
 package com.braincorps.passwdservice.models;
 
-public class User {
-	private String name;
+public class User extends Entity{
 	private long uid;
-	private long gid;
 	private String comment;
 	private String home;
 	private String shell;
 	
 	public User(long uid, long gid, String name, String comment, String home, String shell) {
-		super();
+		super(name, gid);
 		this.uid = uid;
-		this.gid = gid;
-		this.name = name;
 		this.comment = comment;
 		this.home = home;
 		this.shell = shell;
@@ -26,17 +22,6 @@ public class User {
 	public void setUid(long uid) {
 		this.uid = uid;
 	}
-
-
-	public long getGid() {
-		return gid;
-	}
-
-
-	public void setGid(long gid) {
-		this.gid = gid;
-	}
-
 
 	public String getComment() {
 		return comment;
@@ -65,21 +50,6 @@ public class User {
 
 	public void setShell(String shell) {
 		this.shell = shell;
-	}
-
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-
-	public String getName() {
-		return name;
-	}
-
-	@Override
-	public String toString() {
-		return String.format("User [uid=%s, name=%s]", uid, name);
 	}
 
 }

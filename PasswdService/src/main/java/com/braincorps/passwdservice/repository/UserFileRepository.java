@@ -1,10 +1,5 @@
 package com.braincorps.passwdservice.repository;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.braincorps.passwdservice.models.User;
 import com.braincorps.passwdservice.models.UserQuery;
+import com.braincorps.passwdservice.utils.Reader;
 
 @Component
 @Service
@@ -23,28 +19,11 @@ public class UserFileRepository implements IUserRepository{
 	private String userFilePath;
 	
 	@Override
-	public User getUser(long uid) {
-		
-		File file = new File(userFilePath); 
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(file));
-			
-			String line;
-			if(br != null)
-				while ((line = br.readLine()) != null) {
-					User user = parseLineAsUser(line);
-					if(user != null && user.getUid() == uid) {
-						br.close();
-						return user;							
-					}
-				}
-		} catch (FileNotFoundException e) {
-			// TODO Display relevant error
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public User getUser(long uid) {		
+		List<User> allUsers = (List<User>) Reader.loadObjectsFromFile(userFilePath, "user");
+		for(User user : allUsers) {
+			if(user.getUid() == uid)
+				return user;
 		}
 		
 		return null;
@@ -52,60 +31,24 @@ public class UserFileRepository implements IUserRepository{
 
 	@Override
 	public List<User> getAllUsers() {
-		File file = new File(userFilePath); 
-		List<User> users = new ArrayList<>();
-		
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(file));
-			
-			String line;
-			if(br != null)
-				while ((line = br.readLine()) != null) {
-					User user = parseLineAsUser(line);
-					if(user != null)
-						users.add(user);							
-				}
-		} catch (FileNotFoundException e) {
-			// TODO Display relevant error
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return users;	
+		return (List<User>) Reader.loadObjectsFromFile(userFilePath, "user");		
 	}
 	
-	
-	/**
-	 * 
-	 * @param line
-	 * @return
-	 */
-	private User parseLineAsUser(String line){
-		
-		//Ignore comments
-		if(line.startsWith("#"))
-			return null;
-		
-		String[] lineParts = line.split(":");
-		try {
-			User user = new User(Long.parseLong(lineParts[2]), 
-							Long.parseLong(lineParts[3]), lineParts[0],
-							lineParts[4], lineParts[5], lineParts[6]);
-			return user;
-		} catch(Exception e) {
-			return null;
-		}
-	}
 
-/**
- * 	
- * @param user
- * @param query
- * @return
- */
+
+	@Override
+	public List<User> getUsersByQuery(UserQuery query) {
+		List<User> allUsers = (List<User>) Reader.loadObjectsFromFile(userFilePath, "user"); 
+		List<User> users = new ArrayList<>();
+		for(User user : allUsers) {
+			if(matchesQuery(user, query))
+				users.add(user);
+		}
+
+		return users;
+	}
+	
+	//Helper function
 	private boolean matchesQuery(User user, UserQuery query) {
 		if(query.getName() != null && !user.getName().equals(query.getName()))
 			return false;
@@ -122,31 +65,5 @@ public class UserFileRepository implements IUserRepository{
 		return true;
 	}
 
-	@Override
-	public List<User> getUsersByQuery(UserQuery query) {
-		File file = new File(userFilePath); 
-		List<User> users = new ArrayList<>();
-		
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(file));
-			
-			String line;
-			if(br != null)
-				while ((line = br.readLine()) != null) {
-					User user = parseLineAsUser(line);
-					if(user != null && matchesQuery(user, query))
-						users.add(user);							
-				}
-		} catch (FileNotFoundException e) {
-			// TODO Display relevant error
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return users;
-	}
 
 }

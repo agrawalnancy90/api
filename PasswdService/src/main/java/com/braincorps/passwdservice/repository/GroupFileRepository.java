@@ -1,10 +1,5 @@
 package com.braincorps.passwdservice.repository;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.braincorps.passwdservice.models.Group;
 import com.braincorps.passwdservice.models.GroupQuery;
+import com.braincorps.passwdservice.utils.Reader;
 
 @Component
 @Service
@@ -23,28 +19,11 @@ public class GroupFileRepository implements IGroupRepository{
 	private String groupFilePath;
 	
 	@Override
-	public Group getGroup(long gid) {
-		
-		File file = new File(groupFilePath); 
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(file));
-			
-			String line;
-			if(br != null)
-				while ((line = br.readLine()) != null) {
-					Group group = parseLineAsGroup(line);
-					if(group != null && group.getGid() == gid) {
-						br.close();
-						return group;							
-					}
-				}
-		} catch (FileNotFoundException e) {
-			// TODO Display relevant error
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public Group getGroup(long gid) {		
+		List<Group> allGroups = (List<Group>) Reader.loadObjectsFromFile(groupFilePath, "group");
+		for(Group group : allGroups) {
+			if(group.getGid() == gid)
+				return group;
 		}
 		
 		return null;
@@ -52,65 +31,38 @@ public class GroupFileRepository implements IGroupRepository{
 
 	@Override
 	public List<Group> getAllGroups() {
-		File file = new File(groupFilePath); 
-		List<Group> groups = new ArrayList<>();
-		
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(file));
-			
-			String line;
-			if(br != null)
-				while ((line = br.readLine()) != null) {
-					Group group = parseLineAsGroup(line);
-					if(group != null)
-						groups.add(group);							
-				}
-		} catch (FileNotFoundException e) {
-			// TODO Display relevant error
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return groups;	
+		return (List<Group>) Reader.loadObjectsFromFile(groupFilePath, "group");		
 	}
 	
 	
-	/**
-	 * 
-	 * @param line
-	 * @return
-	 */
-	private Group parseLineAsGroup(String line){
-		
-		//Ignore comments
-		if(line.startsWith("#"))
-			return null;
-		
-		String[] lineParts = line.split(":");
-		try {
-			List<String> members = new ArrayList<>();
-			if(lineParts.length == 4) {
-				String[] memberArray = lineParts[3].split(",");
-				for(String m: memberArray) {
-					members.add(m);
-				}					
-			}
-			Group group = new Group(lineParts[0], Long.parseLong(lineParts[2]), members);
-			return group;
-		} catch(Exception e) {
-			return null;
+	@Override
+	public List<Group> getGroupsByUser(String member) {
+		List<Group> allGroups = (List<Group>) Reader.loadObjectsFromFile(groupFilePath, "group");
+		List<Group> groups = new ArrayList<>();
+		for(Group group : allGroups) {
+			if(group.getMembers().contains(member))
+				groups.add(group);
 		}
+
+		return groups;
 	}
 
-/**
- * 	
- * @param user
- * @param query
- * @return
- */
+
+	@Override
+	public List<Group> getGroupsByQuery(GroupQuery query) {
+		List<Group> allGroups = (List<Group>) Reader.loadObjectsFromFile(groupFilePath, "group");
+		List<Group> groups = new ArrayList<>();
+		for(Group group : allGroups) {
+			if(matchesQuery(group, query))
+				groups.add(group);
+		}
+
+		return groups;
+	}
+	
+	
+	//Helper Functions:
+	
 	public boolean matchesQuery(Group group, GroupQuery query) {
 		if(query.getName() != null && !group.getName().equals(query.getName()))
 			return false;
@@ -122,60 +74,6 @@ public class GroupFileRepository implements IGroupRepository{
 				return false;
 		}	
 		return true;
-	}
-
-	@Override
-	public List<Group> getGroupsByQuery(GroupQuery query) {
-		File file = new File(groupFilePath); 
-		List<Group> groups = new ArrayList<>();
-		
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(file));
-			
-			String line;
-			if(br != null)
-				while ((line = br.readLine()) != null) {
-					Group group = parseLineAsGroup(line);
-					if(group != null && matchesQuery(group, query))
-						groups.add(group);							
-				}
-		} catch (FileNotFoundException e) {
-			// TODO Display relevant error
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return groups;
-	}
-
-	@Override
-	public List<Group> getGroupsByUser(String member) {
-		File file = new File(groupFilePath); 
-		List<Group> groups = new ArrayList<>();
-		
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(file));
-			
-			String line;
-			if(br != null)
-				while ((line = br.readLine()) != null) {
-					Group group = parseLineAsGroup(line);
-					if(group != null && group.getMembers().contains(member))
-						groups.add(group);							
-				}
-		} catch (FileNotFoundException e) {
-			// TODO Display relevant error
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return groups;
 	}
 	
 }

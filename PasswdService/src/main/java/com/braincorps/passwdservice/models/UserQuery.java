@@ -66,8 +66,5 @@ public class UserQuery {
 	public void setShell(String shell) {
 		this.shell = shell;
 	}
-	
-	
-	
-	
+		
 }
