@@ -25,21 +25,88 @@ Running application using Eclipse IDE:
 ## Code Examples
 
 There are 7 GET end-points in this service (Assuming service is running on localhost:8080):
-* localhost:8080/users
-* - Returns a list of all users on the system, as defined in the user file (configurable in Application.properties file).
 
-* localhost:8080/users/{uid}
-* - Returns a list of users matching all of the specified query fields. The bracket notation indicates that any of the following query parameters may be supplied:
-*   - name
-*   - uid
-*   - gid
-*   - comment
-*   - home
-*   - shell
+`localhost:8080/users`
+* Returns a list of all users on the system, as defined in the user file (configurable in Application.properties file).
+
+Example Response:
+`[
+{“name”: “root”, “uid”: 0, “gid”: 0, “comment”: “root”, “home”: “/root”, “shell”: “/bin/bash”},
+{“name”: “dwoodlins”, “uid”: 1001, “gid”: 1001, “comment”: “”, “home”: “/home/dwoodlins”, “shell”: “/bin/false”}
+]`
+
+---
+
+`localhost:8080/users/query[?name=<nq>][&uid=<uq>][&gid=<gq>][&comment=<cq>][&home=<hq>][&shell=<sq>]`
+* Returns a list of users matching all of the specified query fields. The bracket notation indicates that any of the following query parameters may be supplied:
+   - name
+   - uid
+   - gid
+   - comment
+   - home
+   - shell
 * Only exact matches are supported.
 
-* localhost:8080/users/query[?name=<nq>][&uid=<uq>][&gid=<gq>][&comment=<cq>][&home=<hq>][&shell=<sq>]
-* localhost:8080/users/{uid}/groups
+Example Query: `GET /users/query?shell=%2Fbin%2Ffalse`
+
+Example Response:
+`[
+{“name”: “dwoodlins”, “uid”: 1001, “gid”: 1001, “comment”: “”, “home”: “/home/dwoodlins”, “shell”: “/bin/false”}
+]`
+---
+  
+`localhost:8080/users/{uid}`
+* Returns a single user with <uid>. Return 404 if <uid> is not found.
+
+Example Response:
+`[
+{“name”: “dwoodlins”, “uid”: 1001, “gid”: 1001, “comment”: “”, “home”: “/home/dwoodlins”, “shell”: “/bin/false”}
+]`
+---
+
+`localhost:8080/users/{uid}/groups`
+* Returns all the groups for a given user.
+
+Example Response:
+`[
+{“name”: “docker”, “gid”: 1002, “members”: [“dwoodlins”]}
+]`
+---
+
+`localhost:8080/groups`
+* Returns a list of all groups on the system in the group file.
+
+Example Response:
+`[
+{“name”: “_analyticsusers”, “gid”: 250, “members”:
+[“_analyticsd’,”_networkd”,”_timed”]},
+{“name”: “docker”, “gid”: 1002, “members”: []}
+]`
+---
+
+`localhost:8080/groups/query[?name=<nq>][&gid=<gq>][&member=<mq1>[&member=<mq2>][&. ..]]`
+* Returns a list of groups matching all of the specified query fields. The bracket notation indicates that any of the following query parameters may be supplied:
+   - name
+   - gid
+   - member (repeated)
+* Any group containing all the specified members are returned, i.e. when query members are a subset of group members.
+
+Example Query:
+`localhost:8080/groups/query?member=_analyticsd&member=_networkd`
+
+Example Response:
+`[
+{“name”: “_analyticsusers”, “gid”: 250, “members”: [“_analyticsd’,”_networkd”,”_timed”]}
+]`
+---
+
+`localhost:8080/groups/<gid>`
+* Returns a single group with <gid>. Return 404 if <gid> is not found.
+
+Example Response:
+`{“name”: “docker”, “gid”: 1002, “members”: [“dwoodlins”]}`
+---
+
 
 ## Built With
 * Java 8
