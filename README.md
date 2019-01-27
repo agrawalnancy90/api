@@ -22,7 +22,7 @@ Running application using Eclipse IDE:
 * **Configure path to user and group files in application.properties file (under src/main/resources). Default path in UNIX-like systems is /etc/passwd (for user file) and /etc/group (for group file). Override these two paths for any other system.**
 * Run Application.java (Application should now be running locally on port 8080) 
 
-## Code Examples
+## Query Examples
 
 There are 7 GET end-points in this service (Assuming service is running on localhost:8080):
 
@@ -53,6 +53,7 @@ Example Response:
 `[
 {“name”: “dwoodlins”, “uid”: 1001, “gid”: 1001, “comment”: “”, “home”: “/home/dwoodlins”, “shell”: “/bin/false”}
 ]`
+
 ---
   
 `localhost:8080/users/{uid}`
@@ -62,6 +63,7 @@ Example Response:
 `[
 {“name”: “dwoodlins”, “uid”: 1001, “gid”: 1001, “comment”: “”, “home”: “/home/dwoodlins”, “shell”: “/bin/false”}
 ]`
+
 ---
 
 `localhost:8080/users/{uid}/groups`
@@ -71,6 +73,7 @@ Example Response:
 `[
 {“name”: “docker”, “gid”: 1002, “members”: [“dwoodlins”]}
 ]`
+
 ---
 
 `localhost:8080/groups`
@@ -82,6 +85,7 @@ Example Response:
 [“_analyticsd’,”_networkd”,”_timed”]},
 {“name”: “docker”, “gid”: 1002, “members”: []}
 ]`
+
 ---
 
 `localhost:8080/groups/query[?name=<nq>][&gid=<gq>][&member=<mq1>[&member=<mq2>][&. ..]]`
@@ -98,6 +102,7 @@ Example Response:
 `[
 {“name”: “_analyticsusers”, “gid”: 250, “members”: [“_analyticsd’,”_networkd”,”_timed”]}
 ]`
+
 ---
 
 `localhost:8080/groups/<gid>`
@@ -105,6 +110,7 @@ Example Response:
 
 Example Response:
 `{“name”: “docker”, “gid”: 1002, “members”: [“dwoodlins”]}`
+
 ---
 
 
