@@ -2,10 +2,10 @@
 A toy HTTP service that exposes the user and group information on a UNIX-like system that is usually locked away in the UNIX /etc/passwd and /etc/groups files.
 
 ## Table of contents
-* [Software Requirements](#softwarerequirements)
+* [Software Requirements](#software-requirements)
 * [Setup](#setup)
-* [Query Examples - API Endpoints](#queryexamples)
-* [Built With](#builtwith)
+* [Query Examples - API Endpoints](#query-examples)
+* [Built With](#built-with)
 * [Contact](#contact)
 
 ## Software Requirements
